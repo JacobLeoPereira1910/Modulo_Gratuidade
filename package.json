@@ -1,0 +1,14 @@
+{
+  "name": "modulo_gratuidade",
+  "version": "1.0.0",
+  "description": "Modulo de Gratuidade do BOM PRATO",
+  "main": "index.php",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Leonardo Jacob",
+  "license": "ISC",
+  "dependencies": {
+    "composer": "^4.1.0"
+  }
+}
