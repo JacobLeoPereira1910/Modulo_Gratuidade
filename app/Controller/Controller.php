@@ -1,4 +1,19 @@
 <?php
+
+require_once('C:\xampp\htdocs\modulo_gratuidade\app\Connection\Connection.php');
+
+$func = '';
+if (isset($_POST['func']) && strlen($_POST['func']) > 0) {
+  $func = $_POST['func'];
+  echo json_encode(['response' => true, 'data' => GetCardsInfo()]);
+} else {
+  echo json_encode(['response' => false, 'data' => 'error']);
+}
+
+
+
+
+
 function createConnection()
 {
   $pg = new PgConnection;
@@ -45,7 +60,7 @@ function GetCardsInfo()
                 FROM		bp_gratuidade_usuarios			    a
                 LEFT JOIN	bp_gratuidade_cartoes			    b on a.codigo_cartao	= b.codigo_cartao
                 LEFT JOIN	bp_gratuidade_cartoes_status	c on b.status			    = c.codigo_status
-                LIMIT 10
+                LIMIT 100
             ";
 
   $stmt = $connection->prepare($sql);

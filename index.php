@@ -20,16 +20,11 @@ $jsonData = json_encode($data);
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Teste</title>
+  <script src="../modulo_gratuidade/js/gratuidade-ajax.js"></script>
   <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
-  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js" integrity="sha512-csNcFYJniKjJxRWRV1R7fvnXrycHP6qDR21mgz1ZP55xY5d+aHLfo9/FcGDQLfn2IfngbAHd8LdfsagcCqgTcQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -73,14 +68,72 @@ $jsonData = json_encode($data);
     .content-text-table {
       font-weight: 600;
     }
+
+    .modal-dialog-cancel-user {
+      background-color: rgba(0, 0, 0, 0.5);
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-cancel-user {
+      background-color: rgba(0, 0, 0, 0.5);
+      /* Fundo semi-transparente */
+    }
+
+    .modal-content-cancel-user {
+      background-color: #fff;
+      /* Fundo branco */
+      border-radius: 10px;
+      /* Cantos arredondados */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+      /* Sombra */
+    }
+
+    .modal-title {
+      color: #333;
+      /* Cor do título */
+    }
+
+    .modal-body-cancel-user {
+      padding: 20px;
+    }
+
+    .modal-footer {
+      justify-content: center;
+      /* Centralizar botões */
+    }
+
+    .btn-secondary {
+      background-color: #ccc;
+      /* Cor de fundo do botão de fechar */
+      color: #333;
+      /* Cor do texto do botão de fechar */
+    }
+
+    .btn-danger {
+      background-color: #f44336;
+      /* Cor de fundo do botão "Cancelar Cartão" */
+      color: #fff;
+      /* Cor do texto do botão "Cancelar Cartão" */
+    }
+
+    .btn-secondary:hover,
+    .btn-danger:hover {
+      opacity: 0.8;
+    }
+
+    .btn-cancel-user,
+    .btn-active-user {
+      display: none;
+    }
   </style>
 </head>
 
 <body>
 
-  <div class="modal fade view-modal" id="" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal fade view-modal modal-view-user" id="" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog">
-      <div class="modal-content">
+      <div class="modal-content modal-content-view-user">
         <div class="modal-header">
           <h5 class="modal-title" id="staticBackdropLabel">Usuário:
           </h5>
@@ -116,15 +169,46 @@ $jsonData = json_encode($data);
               <p>Situação</p>
               <p id="situacao"></p>
             </div>
-
           </div>
         </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-close-modal" data-bs-dismiss="modal">Fechar</button>
+          <button id="btn-cancel-user" type="button" class="btn btn-danger btn-cancel-user">Cancelar Cartão</button>
+          <button id="btn-active-user" type="button" class="btn btn-success btn-active-user">Ativar Cartão</button>
+        </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary btn-close-modal" data-bs-dismiss="modal">Fechar</button>
+
+    </div>
+  </div>
+
+  <div class="modal modal-cancel-user show" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-cancel-user">
+      <div class="modal-content modal-content-cancel-user">
+        <div class="modal-body modal-body-cancel-user text-center">
+          <h5 class="modal-title">Confirmação de Cancelamento</h5>
+          <p>Deseja cancelar o cartão do(a) X?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-close-confirm-modal-cancel" id="btn-close-confirm-modal-cancel" data-bs-dismiss="modal-cancel-user">Fechar</button>
+          <button type="button" id="btn-confirm-cancel" class="btn btn-danger btn-confirm-cancel" >Cancelar Cartão</button>
+        </div>
       </div>
     </div>
   </div>
+
+  <div class="modal modal-active-user" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-cancel-user">
+      <div class="modal-content modal-content-active-user">
+        <div class="modal-body modal-body-active-user text-center">
+          <h5 class="modal-title">Confirmação para ativar</h5>
+          <p>Deseja habilitar o cartão do(a) X?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-close-confirm-modal-active" id="btn-close-confirm-modal-active" data-bs-dismiss="modal-active-user">Fechar</button>
+          <button type="button" id="btn-confirm-active" class="btn btn-success btn-confirm-active">Habilitar Cartão</button>
+        </div>
+      </div>
+    </div>
   </div>
 
   <div class="container">
@@ -144,26 +228,8 @@ $jsonData = json_encode($data);
               <th class="text-table">Ações</th> <!-- Nova coluna para as ações -->
             </tr>
           </thead>
-          <tbody>
-            <?php
-            $items = GetCardsInfo();
-            foreach ($items as $item) : ?>
-              <tr>
-                <td class="content-text-table"><?php echo $item['nome']; ?></td>
-                <td class="content-text-table"><?php echo $item['nascimento']; ?></td>
-                <td class="content-text-table"><?php echo $item['nome_mae']; ?></td>
-                <td class="content-text-table"><?php echo $item['local']; ?></td>
-                <td class="content-text-table"><?php echo $item['data_abordagem']; ?></td>
-                <td class="content-text-table"><?php echo $item['cod_cartao']; ?></td>
-                <td class="content-text-table"><?php echo $item['status']; ?></td>
-                <td>
+          <tbody class="body-table">
 
-                  <button type="button" class="btn btn-primary btn-preview-user" id="btn-preview-user" data-bs-toggle="modal" data-bs-target="">
-                    Editar
-                  </button>
-                </td>
-              </tr>
-            <?php endforeach; ?>
           </tbody>
         </table>
       </div>
@@ -175,134 +241,30 @@ $jsonData = json_encode($data);
 
 <script>
   $(document).ready(function() {
-    const item = JSON.stringify(<?php echo $jsonData ?>);
-    data = JSON.parse(item);
+    getAllCards();
 
-    console.log(data);
-
-    function getName(idUsuario) {
-      let name = '';
-      for (const key in data) {
-        if (data[key].id_usuario == idUsuario) {
-          name = data[key].nome;
-        }
-      }
-      return name;
-    }
-
-
-    function getLocal(idUsuario) {
-      let local = '';
-      for (const key in data) {
-        if (data[key].id_usuario == idUsuario) {
-          local = data[key].local;
-        }
-      }
-      return local;
-    }
-
-    function getNameMae(idUsuario) {
-      let name = '';
-      for (const key in data) {
-        if (data[key].id_usuario == idUsuario) {
-          name = data[key].nome_mae;
-        }
-      }
-      return name;
-    }
-
-    function getNascimento(idUsuario) {
-      let nascimento = '';
-      for (const key in data) {
-        if (data[key].id_usuario == idUsuario) {
-          nascimento = data[key].nascimento;
-        }
-      }
-      return nascimento;
-    }
-
-    function getCartao(idUsuario) {
-      let cartao = '';
-      for (const key in data) {
-        if (data[key].id_usuario == idUsuario) {
-          cartao = data[key].cod_cartao;
-        }
-      }
-      return cartao;
-    }
-
-
-    function getSituacao(idUsuario) {
-      let descricao = '';
-      for (const key in data) {
-        if (data[key].id_usuario == idUsuario) {
-          descricao = data[key].status;
-        }
-      }
-      return descricao;
-    }
-
-    function getAbordagem(idUsuario) {
-      let dataAbordagem = '';
-      for (const key in data) {
-        if (data[key].id_usuario == idUsuario) {
-          dataAbordagem = data[key].data_abordagem;
-        }
-      }
-      return dataAbordagem;
-    }
-
-    console.log(getName(5576))
-
-    $.each(data, function(index, info) {
-      $('#btn-edit').attr('id', `${info.id_usuario}`);
-      $('#btn-preview-user').attr('id', `${info.id_usuario}`)
-      getName(info.id_usuario);
-      getAbordagem(info.id_usuario);
-      getCartao(info.id_usuario);
-      getLocal(info.id_usuario);
-      getNameMae(info.id_usuario);
-      getNascimento(info.id_usuario);
-      getSituacao(info.id_usuario);
-      getLocal(info.id_usuario);
-      getNameMae(info.id_usuario);
-
-    })
-
-    $('.btn-preview-user').on('click', function() {
+    $('.btn-close-confirm-modal-active').unbind().click(function() {
       const id = $(this).attr('id');
-      $('.view-modal').attr('id', `modal-preview-music-${id}`);
-      $(this).attr('data-bs-target', `#modal-preview-music-${id}`);
-      $('#name').text('');
-      $('#name').append(getName(id));
-      $('#nome-mae').text('');
-      $('#nome-mae').append(getNameMae(id));
-      $('#nascimento').text('');
-      $('#nascimento').append(getNascimento(id));
-      $('#local').text('');
-      $('#local').append(getLocal(id));
-      $('#cartao').text('');
-      $('#cartao').append(getCartao(id));
-      $('#situacao').text('');
-      $('#situacao').append(getSituacao(id));
-      $('#data').text('');
-      $('#data').append(getAbordagem(id));
+      alert(`O ID É: ${id}`)
+      $(`#id-active-user-${id}`).modal('hide');
+      
+    });
 
-      console.log(id)
+    $('.btn-close-confirm-modal-cancel').unbind().click(function() {
+      const id = $(this).attr('id');
+      alert(`O ID É: ${id}`)
+      $(`#id-cancel-user-${id}`).modal('hide');
+    });
 
-
-      let myModal = new bootstrap.Modal(document.getElementById('modal-preview-music-' + id), {
-        keyboard: false
-      })
-
-      myModal.toggle()
-    })
-
-    $('.btn-close-modal').click(function() {
-      let id = $(this).attr('id');
+    $('.btn-close-modal').unbind().click(function() {
+      const id = $(this).attr('id');
+      alert(id)
+      $(`#id-edit-user-${id}`).modal('hide');
       $('.view-modal').attr('id', ``);
-      $(this).attr('data-bs-target', ``);
-    })
+      
+    });
+
+
 
   })
 </script>

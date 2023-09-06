@@ -27,9 +27,7 @@ $jsonData = json_encode($data);
   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js" integrity="sha384-IQsoLXl5PILFhosVNubq5LC7Qb9DXgDA9i+tQ8Zj3iwWAwPtgFTxbJ8NT4GN1R8p" crossorigin="anonymous"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-  <script src="https://unpkg.com/jspdf@latest/dist/jspdf.umd.min.js"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css" integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.0/FileSaver.min.js" integrity="sha512-csNcFYJniKjJxRWRV1R7fvnXrycHP6qDR21mgz1ZP55xY5d+aHLfo9/FcGDQLfn2IfngbAHd8LdfsagcCqgTcQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script src="../modulo_gratuidade/js/gratuidade-ajax.js"></script>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -119,13 +117,17 @@ $jsonData = json_encode($data);
 
           </div>
         </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-close-modal" data-bs-dismiss="modal">Fechar</button>
+          <button id="btn-cancel-user" type="button" class="btn btn-danger btn-cancel-user">Cancelar Cartão</button>
+        </div>
       </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary btn-close-modal" data-bs-dismiss="modal">Fechar</button>
-      </div>
+
+
+
     </div>
   </div>
-  </div>
+
 
   <div class="container">
     <div class="row content-dashboard">
@@ -175,6 +177,8 @@ $jsonData = json_encode($data);
 
 <script>
   $(document).ready(function() {
+
+    
     const item = JSON.stringify(<?php echo $jsonData ?>);
     data = JSON.parse(item);
 
@@ -256,6 +260,7 @@ $jsonData = json_encode($data);
 
     $.each(data, function(index, info) {
       $('#btn-edit').attr('id', `${info.id_usuario}`);
+      $('#btn-cancel-user').attr('id', `${info.id_usuario}`);
       $('#btn-preview-user').attr('id', `${info.id_usuario}`)
       getName(info.id_usuario);
       getAbordagem(info.id_usuario);
@@ -288,8 +293,6 @@ $jsonData = json_encode($data);
       $('#data').text('');
       $('#data').append(getAbordagem(id));
 
-      console.log(id)
-
 
       let myModal = new bootstrap.Modal(document.getElementById('modal-preview-music-' + id), {
         keyboard: false
@@ -298,14 +301,44 @@ $jsonData = json_encode($data);
       myModal.toggle()
     })
 
+    $('.btn-cancel-user').on('click', function() {
+      const id = $(this).attr('id');
+      $.ajax({
+        method: "POST",
+        url: "app/Controller/UpdateUser.php",
+        data: {
+          func: 'cancelUser',
+          id: id
+        },
+        success: function(response) {
+          console.log(`Sucesso: ${response}`)
+          const data = JSON.parse(response)
+          if (!data.response) {
+            alert(data.data)
+          }
+
+
+          const html = ``
+
+        },
+        complete: function() {
+
+        },
+        error: function(e) {
+          console.error(e);
+        },
+        beforeSend: function() {
+
+        }
+      })
+
+    })
+
     $('.btn-close-modal').click(function() {
       let id = $(this).attr('id');
       $('.view-modal').attr('id', ``);
       $(this).attr('data-bs-target', ``);
     })
-
-
-
 
   })
 </script>
