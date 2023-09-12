@@ -26,34 +26,51 @@ function getAllCards() {
         console.table(responseData.data);
 
         $.each(responseData.data, function (index, info) {
-
-          html += `<tr>
-        <td id="nome" class="content-text-table">${info.nome}</td>
-        <td id="data-nasci" class="content-text-table">${info.nascimento}</td>
-        <td id="nome-mae" class="content-text-table">${info.nome_mae}</td>
-        <td id="local" class="content-text-table">${info.local}</td>
-        <td id="data-abordagem" class="content-text-table">${info.data_abordagem}</td>
-        <td id="cartao" class="content-text-table">${info.cartao}</td>
-        <td id="situacao" class="content-text-table">${info.status}</td>
-        <td>
-          <button id="${info.id_usuario}" type="button" class="btn btn-primary btn-preview-user" data-bs-toggle="modal" data-bs-target="">
-            Editar
-          </button>
-        </td>
-      </tr>`
-
-          $('.body-table').html(html);
-          
-          $('.btn-close-confirm-modal-active').attr('id', `${info.id_usuario}`)
-          $('.btn-close-confirm-modal-').attr('id', `${info.id_usuario}`)
-
+          const statusCard = info.status;
+          const row = $(`
+            <tr>
+              <td id="nome" class="content-text-table">${info.nome}</td>
+              <td id="data-nasci" class="content-text-table">${info.nascimento}</td>
+              <td id="nome-mae" class="content-text-table">${info.nome_mae}</td>
+              <td id="local" class="content-text-table">${info.local}</td>
+              <td id="data-abordagem" class="content-text-table">${info.data_abordagem}</td>
+              <td id="cartao" class="content-text-table">${info.cartao}</td>
+              <td id="situacao" class="content-text-table status-card">${info.status}</td>
+              <td>
+                <i class="fa-solid fa-pen-to-square btn-edit-user" id="${info.id_usuario}"></i>
+              </td>
+            </tr>
+          `);
+        
+          // Adicione a linha à tabela
+          $('.body-table').append(row);
+        
+          const statusElement = row.find('.status-card'); // Selecione o elemento .status-card dentro da linha atual
+        
+          // Defina a cor com base no status
+          statusElement.css('color', statusCard === 'ATIVO' ? '#008000' : '#ff0000');
+        
+          console.log(`O STTS DO CARD É: ${statusCard}`);
         });
+        
 
+        obj = responseData.data;
 
-        $('.btn-preview-user').unbind().click(function () {
+        getStatusCard = (id) => {
+          let cardStatus = '';
+          for (const key in obj) {
+            if (obj[key].id_usuario == id) {
+              cardStatus = obj[key].status;
+            }
+          }
+          return cardStatus;
+        }
+
+        $('.btn-edit-user').unbind().click(function () {
           const id = $(this).attr('id');
           $('.btn-close-modal').attr('id', `${id}`)
           getModalUser(id);
+
 
         })
       } catch (error) {
@@ -228,7 +245,7 @@ function cancelCardUser(id) {
       $(`#id-cancel-user-${id}`).modal('hide');
     },
     complete: function () {
-      
+
     },
     error: function (e) {
       console.error(e);
@@ -257,7 +274,7 @@ function activeCardUser(id) {
 
     },
     complete: function () {
-      
+
 
     },
     error: function (e) {
