@@ -12,7 +12,7 @@
   <script type="text/javascript" src="../DataTables/datatables.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css" integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-  <script src="../modulo_gratuidade/js/gratuidade-ajax.js"></script>
+  <script src="../modulo_gratuidade/js/js.js"></script>
 
 
   <style>
@@ -97,7 +97,8 @@
     .btn-edit-user,
     .btn-cancel-user,
     .btn-active-user,
-    .btn-show-card-use {
+    .btn-show-card-use,
+    .btn-reactivate-user {
       cursor: pointer;
     }
 
@@ -123,7 +124,8 @@
     hr:not([size]) {
       height: 5px;
       border-radius: 10px;
-      color: orange;
+      color: #f69661;
+      border: solid;
     }
 
     .top-hr-header {
@@ -139,7 +141,8 @@
     }
 
     .btn-active-user,
-    .btn-cancel-user {
+    .btn-cancel-user,
+    .btn-reactivate-user {
       display: none;
     }
 
@@ -151,101 +154,14 @@
     .btn-warning {
       background-color: #ffae4f;
     }
-
     .modal-header {
       border-bottom: 2px solid #f69661 !important;
     }
+
   </style>
 </head>
 
 <body>
-
-
-  <div class="modal modal-reactivate-user" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-reactivate-user">
-      <div class="modal-content modal-content-reactivate-user">
-        <div class="modal-body modal-body-reactivate-user text-center">
-          <h5 class="modal-title">Confirmação para reativar</h5>
-          <p>Deseja reativar o cartão do(a) X?</p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary btn-close-confirm-modal-reactivate" id="btn-close-confirm-modal-reactivate" data-bs-dismiss="modal-reactivate-user">Fechar</button>
-          <button type="button" id="btn-confirm-reactivate" class="btn btn-primary btn-confirm-reactivate">Reativar</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-
-  <div class="modal fade view-modal modal-view" id="" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content modal-content-view-user">
-
-        <div class="modal-header">
-          <h5 class="modal-title" id="staticBackdropLabel">Usuário:</h5>
-          <hr class="hr-modal">
-          <button type="button" class="btn-close btn-close-modal" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-
-        <div class="modal-body">
-          <div class="container">
-            <form id="form-data" name="name-form-data">
-              <div class="user mb-3">
-                <label for="name" class="form-label">Nome</label>
-                <input type="text" id="name" name="nome" class="form-control" placeholder="Novo Nome">
-              </div>
-              <div class="mb-3">
-                <label for="nascimento" class="form-label">Data de Nascimento</label>
-                <input type="text" id="nascimento" name="nascimento" class="form-control" placeholder="Nova Data de Nascimento">
-              </div>
-              <div class="mb-3">
-                <label for="nome-mae" class="form-label">Nome da Mãe</label>
-                <input type="text" id="nome-mae" name="nome-mae" class="form-control" placeholder="Novo Nome da Mãe">
-              </div>
-              <div class="mb-3 row">
-                <div class="col">
-                  <label for="local" class="form-label">Local</label>
-                  <input type="text" id="local" name="local" class="form-control" placeholder="Novo Local">
-                </div>
-                <div class="col">
-                  <label for="data" class="form-label">Data Abordagem</label>
-                  <input type="text" id="data" name="data" class="form-control" placeholder="Nova Data de Abordagem">
-                </div>
-              </div>
-              <div class="mb-3 row">
-                <div class="col">
-                  <label for="cartao" class="form-label status-card">Cartão (QRCode)</label>
-                  <p id="cartao"></p>
-                </div>
-                <div class="col">
-                  <label for="situacao" class="form-label status-card">Situação</label>
-                  <p id="situacao" class="content-text-modal-situacao"></p>
-                </div>
-              </div>
-            </form>
-
-
-          </div>
-        </div>
-
-        <div class="modal-footer">
-          <button type="button" class="btn btn-warning btn-close-modal modal-button" data-bs-dismiss="modal">Fechar</button>
-          <button id="btn-cancel-user" type="button" class="btn btn-danger btn-modal-cancel-user modal-button">Cancelar
-            Cartão</button>
-          <button id="btn-active-user" type="button" class="btn btn-danger btn-modal-active-user modal-button">Ativar
-            Cartão</button>
-          <button id="btn-reactivate-user" type="button" class="btn btn-danger btn-modal-reactivate-user modal-button">Reativar
-            Cartão</button>
-          <button id="btn-save-user" type="button" class="btn btn-warning btn-save-user modal-button">Salvar</button>
-        </div>
-
-
-
-
-
-      </div>
-    </div>
-  </div>
 
   <div class="modal modal-cancel-user show" tabindex="-1">
     <div class="modal-dialog modal-dialog-centered modal-dialog-cancel-user">
@@ -263,7 +179,7 @@
   </div>
 
   <div class="modal modal-active-user" tabindex="-1">
-    <div class="modal-dialog modal-dialog-centered modal-dialog-cancel-user">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-active-user">
       <div class="modal-content modal-content-active-user">
         <div class="modal-body modal-body-active-user text-center">
           <h5 class="modal-title">Confirmação para ativar</h5>
@@ -272,6 +188,22 @@
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary btn-close-confirm-modal-active" id="btn-close-confirm-modal-active" data-bs-dismiss="modal-active-user">Fechar</button>
           <button type="button" id="btn-confirm-active" class="btn btn-primary btn-confirm-active">Ativar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="modal modal-reactivate-user" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-reactivate-user">
+      <div class="modal-content modal-content-reactivate-user">
+        <div class="modal-body modal-body-reactivate-user text-center">
+          <h5 class="modal-title">Confirmação para reativar</h5>
+          <p>Deseja reativar o cartão do(a) X?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary btn-close-confirm-modal-reactivate" id="btn-close-confirm-modal-reactivate" data-bs-dismiss="modal-reactivate-user">Fechar</button>
+          <button type="button" id="btn-confirm-reactivate" class="btn btn-primary btn-confirm-reactivate">Reativar</button>
         </div>
       </div>
     </div>
@@ -323,6 +255,63 @@
   </div>
 
 
+
+  <div class="modal fade view-modal-card modal-view-card" id="" data-bs-backdrop="static" data-bs-keyboard="false"
+  tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content modal-content-view-card">
+      <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Cartões:</h5>
+        <button type="button" class="btn-close btn-close-modal" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="container">
+          <div class="row">
+            <div class="col-md-6">
+              <div class="mb-3">
+                <label for="cartao" class="form-label">Cartão (QRCode)</label>
+                <p id="cartao"></p>
+              </div>
+              <div class="mb-3">
+                <label for="name" class="form-label">Nome</label>
+                <p id="nome"></p>
+              </div>
+              <div class="mb-3">
+                <label for="" class="form-label">Data de Nascimento</label>
+                <p id="nascimento"></p>
+              </div>
+              <div class="mb-3">
+                <label for="nome-mae" class="form-label">Nome da Mãe</label>
+                <p id="nome-mae"></p>
+              </div>
+            </div>
+            <div class="col-md-6">
+              <div class="mb-3 row">
+                <div class="col">
+                  <label for="situacao" class="form-label">Situação</label>
+                  <p id="situacao-cartao" class="content-text-modal-situacao"></p>
+                </div>
+                <div class="col cancelation-date">
+                  <label for="data" class="form-label">Data Cancelamento</label>
+                  <p id="data-cancelamento"></p>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-warning btn-close-modal modal-button"
+          data-bs-dismiss="modal">Fechar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
   <div class="container">
     <div class="row content-data-users">
 
@@ -340,25 +329,22 @@
       </div>
 
       <div class="table table-borderless">
-        <h5>Usuários (Ativos: <span id="ativos">99</span> Cancelados: <span id="cancelados">9</span>)</h5>
+        <h2>Cartões     (Ativos: <span id="ativos"></span> Cancelados: <span id="cancelados"></span>)</h2>
         <table class="table table-borderless table-users" id="id-table-users">
           <thead>
             <tr>
-              <th class="text-table header-text-table">Nome</th>
-              <th class="text-table header-text-table">Data de Nasc.</th>
-              <th class="text-table header-text-table">Nome da Mãe</th>
-              <th class="text-table header-text-table">Local</th>
-              <th class="text-table header-text-table">Data Abordagem</th>
               <th class="text-table header-text-table">Cartão</th>
+              <th class="text-table header-text-table">Data Envio</th>
               <th class="text-table header-text-table">Situação</th>
-              <th class="text-table header-text-table"></th> <!-- Nova coluna para as ações -->
-              <th class="text-table header-text-table"></th> <!-- Nova coluna para as ações -->
-              <th class="text-table header-text-table"></th> <!-- Nova coluna para as ações -->
+              <th class="text-table header-text-table"></th>
+              <th class="text-table header-text-table"></th>
+              <th class="text-table header-text-table"></th>
+
 
             </tr>
           </thead>
           <tbody class="body-table">
-            <!-- Conteúdo da tabela aqui -->
+
           </tbody>
         </table>
       </div>
@@ -377,7 +363,7 @@
 
 <script>
   $(document).ready(function() {
-    getAllCards();
+    getDataCards();
 
     $('.btn-close-confirm-modal-active').unbind().click(function() {
       const id = $(this).attr('id');
@@ -399,6 +385,7 @@
       $('.view-modal').attr('id', ``);
 
     });
+
 
   })
 </script>

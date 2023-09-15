@@ -1,10 +1,10 @@
 <?php
 // Caminho para o arquivo de conexão
-require('../Connection/Connection.php');
 
+require('../../../acesso_bd.php');
 
-$connection = new PgConnection;
-$pg = $connection->Connection();
+$connection = conectaPDOAnalytics();
+$pg = $connection[1];
 
 $id = intval($_POST['id']);
 
@@ -41,7 +41,8 @@ function viewModalUser($id, $pg)
       "status" => utf8_encode($row['descricao']),
       "data_abordagem" => utf8_encode($row['data_abordagem']),
       "cod_cartao" => utf8_encode($row['qrcode']),
-      "id_usuario" => utf8_encode($row['codigo_usuario'])
+      "id_usuario" => utf8_encode($row['codigo_usuario']),
+      "data_cancelamento" => utf8_encode($row['data_cancelamento'])
     );
   }
 

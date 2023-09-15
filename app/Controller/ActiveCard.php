@@ -1,10 +1,10 @@
 <?php
 // Caminho para o arquivo de conexão
-require('../Connection/Connection.php');
+require('../../../acesso_bd.php');
 
 
-$connection = new PgConnection;
-$pg = $connection->Connection();
+$connection = conectaPDOAnalytics();
+$pg = $connection[1];
 
 $id = intval($_POST['id']);
 
@@ -17,31 +17,48 @@ if (isset($_POST['function']) || isset($_POST['id'])) {
 }
 
 function activeUser($id, $pg)
-{
+{ {
+    try {
+      $sql = "SELECT codigo_cartao FROM bp_gratuidade_usuarios WHERE codigo_usuario = :id";
+      $stmt = $pg->prepare($sql);
+      $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+      $stmt->execute();
 
-  try {
+      $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $sql = "SELECT codigo_cartao FROM bp_gratuidade_usuarios WHERE codigo_usuario = :id";
-    $stmt = $pg->prepare($sql);
-    $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-    $stmt->execute();
+      $totalUpdatedRows = 0; // Variável para rastrear o número total de linhas atualizadas
 
-    $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+      foreach ($result as $row) {
+        $codigo_cartao = $row['codigo_cartao'];
 
-    foreach ($result as $row) {
-      $codigo_cartao = $row['codigo_cartao'];
-      $query = "UPDATE bp_gratuidade_cartoes SET status = 1 WHERE codigo_cartao = :codigo_cartao";
-      $stmt2 = $pg->prepare($query);
-      $stmt2->bindParam(':codigo_cartao', $codigo_cartao, PDO::PARAM_INT);
-      $stmt2->execute();
+        $query = "UPDATE bp_gratuidade_cartoes SET status = 1 WHERE codigo_cartao = $codigo_cartao";
+
+
+        $stmt2 = $pg->prepare($query);
+
+
+        $stmt2->execute();
+
+        
+        $updatedRowCount = $stmt2->rowCount();
+
+        if ($updatedRowCount > 0) {
+          $totalUpdatedRows += $updatedRowCount;
+        }
+      }
+
+      if ($totalUpdatedRows > 0) {
+        return ["response" => true, "rowsUpdated" => $totalUpdatedRows];
+      } else {
+        return ["response" => false, "rowsUpdated" => 0];
+      }
+    } catch (PDOException $e) {
+      echo "Error: " . $e->getMessage();
+      return ["success" => false, "error" => $e->getMessage()];
     }
-
-    return true;
-
-  } catch (PDOException $e) {
-    echo "Error: " . $e->getMessage();
   }
 }
+
 
 switch ($function) {
   case "activeUser":

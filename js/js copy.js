@@ -1,13 +1,13 @@
-function getAllCards() {
+function getDataCards() {
   $('.body-table').empty();
   $.ajax({
     method: 'POST',
     url: 'app/Controller/Controller.php',
     data: {
-      func: 'getAllCards',
+      func: 'getDataCards',
     },
     beforeSend: function () {
-      // Você pode adicionar alguma ação antes de enviar a solicitação, se necessário.
+
     },
     success: function (response) {
       try {
@@ -26,24 +26,25 @@ function getAllCards() {
         console.table(responseData.data);
 
         $.each(responseData.data, function (index, info) {
-          const statusCard = info.status;
+          const statusCard = info.status_cartao;
           const row = $(`
-          <tr>
-          <td id="nome" class="content-text-table">${info.nome}</td>
-          <td id="data-nasci" class="content-text-table">${info.nascimento}</td>
-          <td id="nome-mae" class="content-text-table">${info.nome_mae}</td>
-          <td id="local" class="content-text-table">${info.local}</td>
-          <td id="data-abordagem" class="content-text-table">${info.data_abordagem}</td>
-          <td id="cartao" class="content-text-table">${info.cartao}</td>
-          <td id="situacao" class="content-text-table status-card">${info.status}</td>
-          <td>
-            <i class="fa-solid fa-pen-to-square btn-edit-user" id="${info.id_usuario}"></i>
-          </td>
-          <td>
-          <i class="fa-solid fa-list btn-show-card-use" id="btn-show-card-use-id-${info.id_usuario}" data-bs-toggle="modal" data-bs-target="#myModal"></i>
-          </td>
-          
-        </tr>
+                  <tr>
+                    <td id="codigo-cartao" class="content-text-table">${info.codigo_cartao}</td>
+                    <td id="data-criacao" class="content-text-table">${info.data_criacao}</td>
+                    <td id="status" class="content-text-table status-card">${info.status_cartao}</td>
+                    <td>
+                      <i class="fa-solid fa-pen-to-square btn-edit-user" id="${info.id_usuario}"></i>
+                    </td>
+                    <td>
+                      <i class="fa-solid fa-list btn-show-card-user" id="btn-show-card-user-id-${info.id_usuario}" data-bs-toggle="modal"
+                        data-bs-target="#myModal"></i>
+                    </td>
+                    <td>
+                      <i class="fa-solid fa-ban btn-cancel-user" id="${info.id_usuario}" style="color: #ff0202;"></i>
+                      <i class="fa-solid fa-rotate-right btn-active-user" id="${info.id_usuario}" style="color: #388e49;"></i>
+                      <i class="fa-duotone fa-plus fa-2xl btn-reactivate-user" id="${info.id_usuario} style="color: #414bb2;"></i>
+                    </td>
+                  </tr>
           `);
 
           $('.body-table').append(row);
@@ -53,7 +54,6 @@ function getAllCards() {
 
           $('#btn-modal-cancel-user').attr('id', `${info.id_usuario}`);
           $('#btn-modal-active-user').attr('id', `${info.id_usuario}`);
-          $('#btn-modal-confirm-reactivate').attr('id', `${info.id_usuario}`);
 
           $('#btn-confirm-active').attr('id', `${info.id_usuario}`);
           $('#btn-confirm-cancel').attr('id', `${info.id_usuario}`);
@@ -70,7 +70,7 @@ function getAllCards() {
 
           statusElement.css('font-weight', '700');
 
-          const status = info.status;
+          const status = info.status_cartao;
 
           console.log(`STATUS: ${status}`);
 
@@ -115,10 +115,13 @@ function getAllCards() {
 
         })
 
+        $('.btn-reactivate-user').click(function () {
+          let id = $(this).attr('id');
+          alert(`click: ${id}`);
+        });
 
         $('.btn-cancel-user').unbind().click(function () {
           const id = $(this).attr('id');
-          alert(`MEU ID: ${id}`)
 
           $('.modal-cancel-user').attr('id', `modal-cancel-user-id-${id}`)
 
@@ -131,7 +134,7 @@ function getAllCards() {
         });
         $('.btn-modal-cancel-user').unbind().click(function () {
           const id = $(this).attr('id');
-          alert(`MEU ID: ${id}`)
+
           $('.modal-cancel-user').attr('id', `modal-cancel-user-id-${id}`)
 
           $('.btn-confirm-cancel').attr('id', `${id}`);
@@ -139,22 +142,6 @@ function getAllCards() {
           $('.btn-close-confirm-modal-cancel').attr('id', `${id}`);
 
           showModalCancelCard(id);
-
-        });
-
-        $('.btn-modal-reactivate-user').unbind().click(function () {
-          const id = $(this).attr('id');
-          alert(`MEU ID: ${id}`)
-
-          $('.modal-reactivate-user').attr('id', `modal-reactivate-user-id-${id}`)
-
-          //$('.btn-confirm-reactivate').attr('id', `${id}`);
-
-          $('.btn-close-confirm-modal-reactivate').attr('id', `${id}`);
-
-          $(`#id-edit-user-${id}`).modal('hide');
-
-          showModalReactivateCard(id);
 
         });
 
@@ -170,17 +157,20 @@ function getAllCards() {
 
         });
 
+
         $('.btn-reactivate-user').unbind().click(function () {
           const id = $(this).attr('id');
 
-          //$('.modal-reactivate-user').attr('id', `modal-reactivate-user-id-${id}`)
+          $('.modal-active-user').attr('id', `modal-active-user-id-${id}`)
 
-          $('.btn-confirm-reactivate').attr('id', `${id}`);
+          $('.btn-confirm-active').attr('id', `${id}`);
 
-          $('.btn-close-confirm-modal-reactivate').attr('id', `${id}`);
-          showModalReactivateCard(id);
+          $('.btn-close-confirm-modal-active').attr('id', `${id}`);
+          showModalActiveCard(id);
 
         });
+
+
 
 
         $('.btn-modal-active-user').unbind().click(function () {
@@ -195,6 +185,7 @@ function getAllCards() {
 
         });
 
+
         $('.btn-confirm-cancel').unbind().click(function () {
           const id = $(this).attr('id');
           console.log(`Confirma: ${id}`)
@@ -205,12 +196,6 @@ function getAllCards() {
           const id = $(this).attr('id');
           console.log(`Confirma: ${id}`)
           activeCardUser(id);
-        });
-        $('.btn-confirm-reactivate').unbind().click(function () {
-          const id = $(this).attr('id');
-          alert(`MEU ID: ${id}`)
-          console.log(`Confirma: ${id}`)
-          reactivateCardUser(id);
         });
 
       } catch (error) {
@@ -266,7 +251,6 @@ function getModalUser(id) {
 
           $('.btn-modal-active-user').css('display', status === 'CANCELADO' ? 'inline-block' : 'none');
           $('.btn-modal-cancel-user').css('display', status === 'ATIVO' ? 'inline-block' : 'none');
-          $('.btn-modal-reactivate-user').css('display', status === 'INATIVO' ? 'inline-block' : 'none');
 
 
           $('#name').text('');
@@ -287,14 +271,8 @@ function getModalUser(id) {
 
           $('#btn-close-confirm-modal-cancel').attr('id', `${info.id_usuario}`);
           $('#btn-close-active-modal-cancel').attr('id', `${info.id_usuario}`);
-          $('#btn-close-reactivate-modal-cancel').attr('id', `${info.id_usuario}`);
-
-          $(`.btn-modal-reactivate-user`).attr('id', `${info.id_usuario}`);
-          $(`.btn-modal-active-user`).attr('id', `${info.id_usuario}`);
-          $(`.btn-modal-cancel-user`).attr('id', `${info.id_usuario}`);
           $('.modal-cancel-user').attr('id', `id-cancel-user-${info.id_usuario}`);
           $('.modal-active-user').attr('id', `id-active-user-${info.id_usuario}`);
-
 
 
           $('#btn-save-user').attr('id', `${info.id_usuario}`);
@@ -302,8 +280,8 @@ function getModalUser(id) {
 
           $('#form-data').attr('id', `form-data-user-id-${info.id_usuario}`)
 
-          var cor = (status === 'ATIVO') ? '#008000' : (status === 'CANCELADO') ? '#ff0000' : '#000000';
-          $('.content-text-modal-situacao').css('color', cor);
+          $('.content-text-modal-situacao').css('color', status === 'ATIVO' ? '#008000' : '#ff0000')
+
 
         });
 
@@ -344,7 +322,7 @@ function showConfirmModal(id) {
 }
 
 function showConfirmModalActive(id) {
-  let myModal = new bootstrap.Modal(document.getElementById(`id-btn-active-user-${id}`), {
+  let myModal = new bootstrap.Modal(document.getElementById(`id-btn-active-user-5580${id}`), {
     keyboard: false
   })
   myModal.toggle();
@@ -386,6 +364,7 @@ function cancelCardUser(id) {
     },
     success: function (r) {
       response = JSON.parse(r);
+
       const obj = JSON.parse(response.response);
 
       console.log(`RESPONSE: ${obj}`)
@@ -407,17 +386,12 @@ function cancelCardUser(id) {
             break;
         }
 
-        console.log(`ENDPOINT: ${endpoint}`);
-
-
-
-        $('.modal-cancel-user').modal('hide');
-        $(`#id-edit-user-${id}`).modal('hide');
+        console.log(endpoint);
+        $(`#modal-cancel-user-id-${id}`).modal('hide');
       }
-
     },
     complete: function () {
-      $(`$btn-modal-cancel-user-${id}`).modal('hide');
+
     },
     error: function (e) {
       console.error(e);
@@ -437,6 +411,7 @@ function activeCardUser(id) {
     },
     success: function (r) {
       response = JSON.parse(r);
+
       const obj = JSON.parse(response.response);
 
       console.log(`RESPONSE: ${obj}`)
@@ -462,13 +437,14 @@ function activeCardUser(id) {
 
 
 
-        $('.modal-active-user').modal('hide');
-        $(`#id-edit-user-${id}`).modal('hide');
+        $(`#modal-active-user-id-${id}`).modal('hide');
       }
+
 
     },
     complete: function () {
-      $(`$btn-modal-active-user-${id}`).modal('hide');
+
+
     },
     error: function (e) {
       console.error(e);
@@ -488,37 +464,12 @@ function reactivateCardUser(id) {
     },
     success: function (r) {
       response = JSON.parse(r);
-
-      const obj = JSON.parse(response.response);
-
-      console.log(`RESPONSE: ${obj}`)
-
-      if (obj == true) {
-        const currentPageUrl = window.location.href; // Obtém a URL completa da página
-        const parts = currentPageUrl.split('/'); // Divide a URL em partes usando a barra como separador
-        const endpoint = parts[parts.length - 1]; // Obtém a última parte, que é o endpoint
-
-        switch (endpoint) {
-          case 'cartoes.php':
-            getDataCards();
-            break;
-          case 'index.php':
-            getAllCards();
-            break;
-          default:
-            console.log('Endpoint desconhecido:', endpoint);
-            break;
-        }
-
-        console.log(`ENDPOINT: ${endpoint}`);
-
-
-
-        $('.modal-reactivate-user').modal('hide');
-        $(`#id-edit-user-${id}`).modal('hide');
+      if (response.response == true) {
+        //$(`#${id}`).attr('class', 'btn btn-success');
+        console.log(id);
+        getAllCards();
+        $(`#modal-active-user-id-${id}`).modal('hide');
       }
-
-
 
 
     },
@@ -573,4 +524,3 @@ function editDataUser(id, formDataSerialized) {
     }
   });
 }
-
